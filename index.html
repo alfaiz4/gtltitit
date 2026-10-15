@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>POS Kasir</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+<style>
+  :root{--bg:#F0F2F5;--card:#fff;--tx:#111827;--mut:#6b7280;--ac:#7A35FF;--on:#fff;--bd:#e5e7eb}
+  .dark{--bg:#0B132B;--card:#131d3b;--tx:#e5e7eb;--mut:#94a3b8;--ac:#39FF14;--on:#0B132B;--bd:#223058}
+  html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--tx)}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:1rem}
+  .sw{width:2.75rem;height:1.5rem;border-radius:999px;border:1px solid var(--bd);background:var(--bg);position:relative;flex:none}
+  .sw i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:var(--ac);transition:transform .2s}
+  .dark .sw i{transform:translateX(20px)}
+  .btn{background:var(--ac);color:var(--on);font-weight:600;border-radius:.75rem;padding:.65rem 1rem}
+  .btn:disabled{opacity:.4}
+  .btn2{border:1px solid var(--bd);border-radius:.75rem;padding:.65rem 1rem}
+  .inp{background:var(--bg);border:1px solid var(--bd);border-radius:.75rem;padding:.6rem .8rem;font-size:16px;width:100%;min-width:0;max-width:100%}
+  input[type=date]{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:2.75rem;text-align:left}
+  input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0}
+  .ac{color:var(--ac)} .mut{color:var(--mut)}
+  @media print{body *{visibility:hidden}#receipt,#receipt *{visibility:visible}#receipt{position:absolute;left:0;top:0;width:100%;color:#000;background:#fff}}
+</style>
+</head>
+<body class="min-h-screen">
+<header class="sticky top-0 z-10 flex items-center justify-between px-4 py-3" style="background:var(--card);border-bottom:1px solid var(--bd)">
+  <b class="ac text-lg">● POS Kasir</b>
+  <nav class="flex items-center gap-2 text-sm">
+    <button id="theme" class="sw" role="switch" aria-label="Ganti tema"><i></i></button>
+    <button id="logout" class="btn2 hidden">Keluar</button>
+  </nav>
+</header>
+<main id="app" class="p-4 max-w-7xl mx-auto"><p class="mut text-center mt-10">Memuat…</p></main>
+<div id="err" class="p-4 text-sm text-red-500 text-center"></div>
+<footer class="text-center text-xs mut py-4">Powered By Neogrup</footer>
+<div id="modal" class="hidden fixed inset-0 z-20 bg-black/60 flex items-center justify-center p-4">
+  <div id="mbox" class="card p-5 w-full max-w-md max-h-[90vh] overflow-auto"></div>
+</div>
+<script>
+  if (localStorage.theme === 'light') document.documentElement.classList.remove('dark');
+  document.getElementById('theme').onclick = () => {
+    const d = document.documentElement.classList.toggle('dark');
+    localStorage.theme = d ? 'dark' : 'light';
+  };
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(t => document.addEventListener(t, e => e.preventDefault()));
+  document.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  const showErr = m => { document.getElementById('err').textContent = 'Error: ' + m; };
+  addEventListener('error', e => showErr(e.message));
+  addEventListener('unhandledrejection', e => showErr((e.reason && e.reason.message) || e.reason));
+  if (location.protocol === 'file:') showErr('Buka lewat server/hosting (mis. npx serve .), bukan klik dua kali file.');
+  setTimeout(async () => {
+    const a = document.getElementById('app');
+    if (a.textContent.trim() !== 'Memuat…') return;
+    try {
+      if (!(await fetch('app.js')).ok) return showErr('app.js tidak ditemukan. Semua file harus satu folder dengan index.html.');
+      if (!(await fetch('supabaseClient.js')).ok) return showErr('supabaseClient.js tidak ditemukan. Taruh di folder yang sama dengan index.html.');
+      if (!window.supabase) return showErr('Pustaka Supabase gagal dimuat (internet lambat atau cdn.jsdelivr.net diblokir).');
+      showErr('Aplikasi tidak berjalan. Buka Console (F12) atau kirim screenshot error ini.');
+    } catch (e) { showErr(e.message); }
+  }, 4000);
+</script>
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="app.js?v=3" defer></script>
+</body>
+</html>
