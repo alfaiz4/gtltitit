@@ -3,7 +3,7 @@ const http = require('http'), fs = require('fs'), path = require('path');
 const ROOT = __dirname, PORT = process.env.PORT || 3000;
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon', '.json': 'application/json' };
-const BLOCK = new Set(['/server.js', '/package.json', '/package-lock.json', '/README.md', '/schema.sql', '/auth.sql', '/update.sql']);
+const BLOCK = new Set(['/server.js', '/package.json', '/package-lock.json', '/README.md', '/setup.sql']);
 
 http.createServer((req, res) => {
   let p;
