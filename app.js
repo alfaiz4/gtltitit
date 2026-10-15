@@ -226,7 +226,7 @@ Object.assign(S, { user: null, role: null, err: '', name: '', staff: [] });
 let ch;
 
 const loginView = () => `<form onsubmit="A.login(event)" class="card p-6 max-w-sm mx-auto mt-16 grid gap-3">
-  <h1 class="text-xl font-bold ac text-center">Masuk Karyawan</h1>
+  <h1 class="text-xl font-bold ac text-center">Masuk</h1>
   <p class="mut text-sm text-center">Akses hanya untuk karyawan terdaftar.</p>
   ${configured ? '' : '<p class="text-red-500 text-sm">Variabel SUPABASE_URL & SUPABASE_ANON_KEY belum diisi (Railway → Variables)</p>'}
   <input id="em" type="email" class="inp" placeholder="Email" required autocomplete="username">
